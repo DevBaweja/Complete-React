@@ -1,0 +1,20 @@
+Don't touch DOM
+Lego Block( Resuable-Components )
+
+### UI Components
+
+Material UI React
+Semantic UI React
+Bootstrap React
+Blueprint
+
+### Unidirectional Data Flow
+
+State & Component
+function React(state, component){
+
+}
+
+It creates Virtual DOM (React Developer Tool)
+
+React react to state change
