@@ -1,0 +1,14 @@
+### Adding sass/scss into project
+npm i node-sass
+
+create-react-app take config automatically
+Just create sass/scss file then import them into jsx
+
+### serviceWorker.js
+Making Progressive Web App
+
+### Project Structure
+
+components
+
+pages
