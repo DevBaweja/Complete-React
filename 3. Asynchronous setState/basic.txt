@@ -1,0 +1,58 @@
+### Asynchronous setState
+
+It batches multiple setState calls
+As it make time to update DOM
+
+In case where we update setState and uses state or props inside it
+updateStateHandler = async () => {
+    await this.setState({ index: this.state.index + 1 });
+    console.log(this.state.index);
+};
+Don't do this
+this.setState({
+   index: this.state.index + 1 
+})
+
+Here we are using previous state or props inside it
+in case of multiple batches state or props can be unpredictable
+
+So we pass function
+this.setState((prevState, prevProps) => {
+    return {
+        index: prevState.index + 1
+    }
+})
+Do this
+updateStateHandler = async () => {
+    await this.setState((prevState, prevProps) => {
+        return {
+            index: prevState.index + 1,
+        };
+    });
+    console.log(this.state.index);
+};
+
+Passing Number, Boolean directly
+We can use variable to pass them
+<App increment={1} toIncrement={true} />
+
+
+### Props in Class Based Component
+
+In class Based component constructor get access to props as arguments
+
+constructor(props){
+    super(props)
+
+    this.state = {
+        index: this.props.index
+    }
+}
+
+state = {
+    index: this.props.index
+}
+
+Even without constructor this.props is also defined
+
+<App init={100} />

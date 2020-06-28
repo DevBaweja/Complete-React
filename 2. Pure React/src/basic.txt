@@ -1,0 +1,81 @@
+### 
+React is like engine
+ReactDOM is view that can run on engine
+
+CDN
+<script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+const App = () => {
+    return React.createElement('div', 
+        { className: 'App' }, 
+        React.createElement('h1', null, 'Hi, there'));
+};
+ReactDOM.render(React.createElement(App), document.getElementById('root'));
+
+
+# React.createElement('tag')
+Native html element are in quotes
+
+React.createElement(App)
+
+# React.createElement('div', { key: value });
+
+
+key:value pairs are attributes
+
+# React.createElement('div', { key: value }, element);
+element is again React.createElement()
+
+element is props.children in component
+
+Use array for multiple children element
+
+const Person = props => {
+    return React.createElement('div', { className: 'person' }, [
+        React.createElement('h2', {}, props.name),
+        React.createElement('p', {}, props.age),
+        props.children,
+    ]);
+};
+const App = () => {
+    return React.createElement(
+        'div',
+        { className: 'app' },
+        React.createElement('div', { className: 'persons' }, [
+            React.createElement(Person, { name: 'John', age: 20 }),
+            React.createElement(Person, { name: 'Jake', age: 30 }),
+            React.createElement(Person, { name: 'Alex', age: 18 }, 'Hobbies: Drawing'),
+        ])
+    );
+};
+
+### NPM Versioning
+
+npm list react react-dom react-scripts
+
+It gives version information of packages
+
+npm update
+
+
+npm audit fix
+
+Update packages to version with no vulnerabilities
+
+### Developer Tools
+
+More Tools - Rendering
+
+Virtual DOM
+It only re-renders what has been changed
+
+If component state is changed then component is re-rendered
+Also if state is passed to child node Then it is also re-rendered
+And process might continue till end of tree
+But point is it only update that specific branches that need to updated
+
+Data always effect node and node to end
+Unidirectional flow of data
+
+Actions updates State and then State updates view (Virtual DOM)

@@ -1,0 +1,29 @@
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+}
+html,
+body {
+    font-size: 62.5%;
+    box-sizing: border-box;
+}
+.app {
+    font-size: 1.8rem;
+}
+.persons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 3rem;
+}
+
+.person {
+    border: 0.2rem solid #ccc;
+    padding: 2rem 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}

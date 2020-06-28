@@ -1,0 +1,31 @@
+### Lifecycle Methods 
+
+constructor
+render
+(It will render DOM)
+componentDidMount
+(It will mounted and waits for updates)
+componentDidUpdate
+(It will then updates the DOM accordingly)
+componentWillUnmount
+(It will unmount)
+
+componentDidMount - Only once the component is mounted to DOM
+componentDidUpdate - Called whenever state changes inturn call render method also
+componentWillUnmount - Only once the component is unmounted from DOM
+
+Usage:
+constructor - One time setup
+render - Avoid doing anything besides returning JSX
+componentDidMount - To do data-loading
+componentDidUpdate - More data-loading when state/props changes
+componentWillUnmount - Cleanup
+
+Other Methods:
+shouldComponentUpdate
+getDerivedStateFromProps
+getSnapshotBeforeUpdate
+
+
+shouldComponentUpdate(nextProps, nextState)
+it return true or false to decide whether to update or not
