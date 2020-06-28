@@ -1,0 +1,157 @@
+### React Router
+
+Thing is that in routing
+Browsers works around concepts of urls
+
+However initially it was problem to mimcs same scenario(as in case of back buttons) as there are no actual urls
+
+React Router libraries uses History Api internally
+
+npm i react-router-dom
+
+### 
+In index.js
+import { BrowserRouter as Router } from 'react-router-dom';
+
+Router is component that will be wrapped around App
+
+
+ReactDOM.render(
+    <Router>
+        <App />
+    </Router>,
+    document.getElementById('root')
+);
+
+###
+To anchor in any file
+
+import { Link } from 'react-router-dom';
+<Link to="\"> Go to Home </Link>
+
+###
+In App.js
+import { Route, Switch } from 'react-router-dom';
+
+<Switch>
+    <Route exact path="/" component={Home}>
+    <Route path="/dashboard">
+        <Dashboard />
+    </Route>
+<Switch/>
+
+There component come from pages folder
+
+
+### Router
+BrowserRouter as Router is used to specific that routing is to be implemented
+
+### Switch & Route
+It is like if else in routing
+
+<Route exact={true} path="/" component={Home}/>
+
+path is for url
+It is string
+
+component is to specific component
+We can also enclose component in Route tag
+
+exact is for path
+if only exact then it is considered to be true
+
+<Route exact path="/" component={HomePage} />
+<Route path="/about" component={AboutMe} />
+
+If we don't use exact then both pages will be displayed on '/about'
+
+However in case of Switch it will display first that matches path
+<Switch>
+    <Route exact path="/" component={HomePage} />
+    <Route path="/about" component={AboutMe} />
+</Switch>
+
+Without exact in about 
+'/about/me' will still display about
+
+
+### Simple Routing
+
+
+const TopicDetail = (props) => {
+    console.log(props);
+    return <h1>Topic Detail</h1>;
+};
+<Switch>
+    <Route exact path="/" component={Home} />
+    <Route exact path="/topic" component={Topic} />
+    <Route path="/topic/:id" component={TopicDetail} />
+</Switch>
+
+URL Parameters
+/:id
+
+Each component when routed receive properties
+history
+location
+match
+
+match.isExact to get if it will exact match or not
+match.params are parameters of url
+match.url is url that is exactly matched
+
+location.pathName is url type into url bar
+location.search are query of url
+location.hash gives hash value
+
+All of these location can also be taken by window
+
+##
+
+In case of Link(<Link to="/">) vs Anchor(<a href="/">)
+Anchor redirect to specific link
+Link don't redirect to specific link. It also mimcs it
+
+With Anchor page is re-render
+With Link component are unmounted and mounted again
+
+Link and props.history
+
+<Link to="/topic">Topic</Link>
+<button onClick={() => props.history.push('/topic')}>Topic</button>
+
+### withRoutter() and Props Tunneling/Drilling
+
+Here in react routing it only passes values of 
+history
+location
+match
+to component in Route
+
+So in order to get access to further in tree (childrens) we need to pass these values as props to next child compoennt in tree
+
+This is called props Tunneling/Drilling
+
+You can get access to the history object’s properties and the closest <Route>'s match via the withRouter higher-order component. withRouter will pass updated match, location, and history props to the wrapped component whenever it renders.
+
+export default withRouter(MenuItem)
+
+ renderMenu = () => {
+        return this.state.sections.map(({ id, ...other }) => <MenuItem key={id} {...other}   />);
+};
+
+Use this destructing to pass argument with exact name as props
+
+const generateUrl = () => {
+    history.push(`${match.url}${linkUrl}`);
+};
+
+Point is when we want generate item which point to different url
+
+Everything is passed to it from container list above it
+
+and withRouter item get access to history,location,match
+And also to avoid props tunneling/drilling
+
+history.push(`${match.url}${linkUrl}`)
+It is done so that with any url it will do it work
