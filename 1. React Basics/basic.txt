@@ -312,5 +312,3 @@ git remote add origin <SSH>
 git add -A
 git commit -m "Message"
 git push origin master
-
-### 

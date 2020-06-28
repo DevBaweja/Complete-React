@@ -10,5 +10,4 @@ html,
 body {
     font-size: 62.5%;
     box-sizing: border-box;
-    background-image: linear-gradient(to left, rgba(7, 27, 82, 1) 0%, rgba(0, 128, 128, 1) 100%);
 }
