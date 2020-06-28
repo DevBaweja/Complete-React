@@ -1,0 +1,14 @@
+.search-box {
+    margin: 1rem auto;
+    padding: 2rem 1rem;
+    width: 25rem;
+}
+
+.search {
+    border: 0.5rem solid #ccc;
+    width: 100%;
+    border-radius: 10rem;
+    padding: 1rem;
+    outline: none;
+    font-size: 1.8rem;
+}
