@@ -7,7 +7,7 @@ const MenuItem = ({ title, imageUrl, size, history, match, linkUrl }) => {
     };
     const style = { backgroundImage: `url(${imageUrl})` };
     return (
-        <div className={`menu-item ${size ? size : null}`} onClick={generateUrl}>
+        <div className={`menu-item ${size ? size : ''}`} onClick={generateUrl}>
             <div style={style} className="background-image" />
             <div className="content">
                 <h1 className="content__title">{title}</h1>

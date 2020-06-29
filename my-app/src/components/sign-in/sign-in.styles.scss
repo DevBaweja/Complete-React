@@ -6,4 +6,8 @@
     &__title {
         margin: 10px 0;
     }
+    &__buttons {
+        display: flex;
+        justify-content: space-between;
+    }
 }
