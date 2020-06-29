@@ -3,7 +3,7 @@ import React from 'react';
 import FormInput from '../form-input/form-input.component';
 import CustomButton from '../custom-button/custom-button.component';
 
-import { signInWithGoogle } from '../../firebase/firebase.utils';
+import { auth, signInWithGoogle } from '../../firebase/firebase.utils';
 import './sign-in.styles.scss';
 
 class SignIn extends React.Component {
@@ -12,9 +12,16 @@ class SignIn extends React.Component {
         password: '',
     };
 
-    submitHandler = event => {
+    submitHandler = async event => {
         event.preventDefault();
-        this.setState({ email: '', password: '' });
+        const { email, password } = this.state;
+
+        try {
+            await auth.signInWithEmailAndPassword(email, password);
+            this.setState({ email: '', password: '' });
+        } catch (err) {
+            console.log('Error: Logging in User', err);
+        }
     };
 
     changeHandler = event => {
@@ -25,6 +32,7 @@ class SignIn extends React.Component {
         });
     };
     render() {
+        const { email, password } = this.state;
         return (
             <div className="sign-in">
                 <h2 className="sign-in__title">I already have an account</h2>
@@ -34,7 +42,7 @@ class SignIn extends React.Component {
                     <FormInput
                         type="email"
                         name="email"
-                        value={this.state.email}
+                        value={email}
                         required
                         changeHandler={this.changeHandler}
                         label="Email"
@@ -43,7 +51,7 @@ class SignIn extends React.Component {
                     <FormInput
                         type="password"
                         name="password"
-                        value={this.state.password}
+                        value={password}
                         required
                         changeHandler={this.changeHandler}
                         label="Password"
