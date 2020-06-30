@@ -5,7 +5,7 @@ import './collection-preview.styles.scss';
 const CollectionPreview = ({ title, items }) => {
     const renderCollectionItem = () => {
         const limit = 4;
-        return items.slice(0, limit).map(({ id, ...other }) => <CollectionItem key={id} {...other} />);
+        return items.slice(0, limit).map(item => <CollectionItem key={item.id} item={item} />);
     };
     return (
         <div className="collection-preview">

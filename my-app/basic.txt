@@ -114,6 +114,18 @@ currentState.currentUser = action.payload will NOT work
 
 default can be currentState and not {...currentState} as it will then re-render
 
+return {
+    ...currentState,
+    currentUser: action.payload,
+};
+This way of setting currentUser even there is also currentUser when we spread currentState
+is due to fact that while spreading overwrite occur over same properties LAST ONE is considered
+return {
+    cartItems: [...state.cartItems, action.payload],
+    ...state,
+}; 
+will NOT work it will return state as it without overwrite cartItems
+
 About React
 this.state does not work as obj ref is not changed
 
@@ -291,7 +303,7 @@ export default cartReducer;
 
 We don't need to callback as in setState to change value that is actually from state(mostly done while toggle)
 
-# In Action
+# In Actions
 import CartActionTypes from './cart.types';
 
 export const toggleCartHidden = () => ({
@@ -336,3 +348,66 @@ const state = {
 
 { user: { currentUser }, cart: { hidden } } = state
 Only currentUser and hidden will be accessed and not user and cart
+
+### Add Item
+
+In add item simply pushing or adding via spread will not work we need to have grouping of same item
+
+# In Reducer
+
+const INITIAL_STATE = {
+    hidden: true,
+    cartItems: [],
+};
+
+case CartActionTypes.ADD_ITEM:
+    return {
+        ...state,
+        cartItems: [...cartItems,action.payload]
+    };
+
+# In Actions
+
+export const addItem = item => ({
+    type: CartActionTypes.ADD_ITEM,
+    payload: item,
+});
+
+# In Types
+
+const CartActionTypes = {
+    TOGGLE_CART_HIDDEN: 'TOGGLE_CART_HIDDEN',
+    ADD_ITEM: 'ADD_ITEM',
+};
+
+# In CollectionItem component
+
+const mapDispatchToProps = dispatch => ({
+    addItem: item => dispatch(addItem(item)),
+});
+export default connect(null, mapDispatchToProps)(CollectionItem)
+
+<CustomButton inverted onClick={() => addItem(item)}>
+    Add to cart
+</CustomButton>
+
+### Grouping items in cart.reducer
+
+Create cart.util.js
+export const addItemToCart = (items, newItem) => {
+    const exists = items.find(item => item.id === newItem.id);
+    if (exists) {
+        return items.map(item => (item.id === newItem.id ? { ...item, quantity: item.quantity + 1 } : item));
+    }
+
+    return [...items, { ...newItem, quantity: 1 }];
+};
+
+# In reducer
+case CartActionTypes.ADD_ITEM:
+    return {
+        ...state,
+        cartItems: addItemToCart(state.cartItems, action.payload),
+    };
+
+
