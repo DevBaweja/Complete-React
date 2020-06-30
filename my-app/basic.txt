@@ -1,0 +1,214 @@
+### Redux
+
+npm i redux react-redux
+
+State Management Library
+1. Single Source of truth
+2. State is read only
+3. Changes using pure function
+
+Single Source of truth
+One massive state object where all of data is stored in App
+
+State is read only
+State created by redux will not be modified. We will create new state every time
+
+Changes using pure function
+ie this.state = {modified: value} is unaccepted use only pure function
+
+
+### keywords
+Action
+Root Reducer
+Store
+DOM changes
+
+Action
+User does action
+
+Root Reducer
+fn - receive action and create state/store
+
+Store
+Entire state of app
+
+DOM changes
+Then dom changes happens by react
+
+### FLUX Pattern
+
+Action - Dispatcher - Store - View
+One way data flow
+
+MVC Pattern
+Action - Controller - Model - View
+
+##  Create a React Redux App
+The recommended way to start new apps with React and Redux is by using the official Redux+JS template for Create React App, which takes advantage of Redux Toolkit and React Redux's integration with React components.
+
+npx create-react-app my-app --template redux
+
+### Props Drilling
+
+In router we get info about history,location,match by withRouter
+Higher Order Functional Components
+
+However in case of other props such as current user
+We need some sort of higher order functional component
+
+So we may think to put state in component that need it
+However state may be needed by another component
+We cann't declare multiple instances of same properties in state of each component
+As it might create some inconsistencies and also DRY principle is unjustified
+
+One single source of state and then any component have access to that without being passed along as props
+
+Home,User,Shop Component
+Generate action and does some setState
+
+Home,User,Shop Reducer (Slice of State)
+These action will only update that Reducer
+
+Root Reducer(App state)
+Contain all reducers
+
+Pass state as props
+
+### Working
+
+Component
+
+trigger action - set_current_user
+
+{ 
+    type: string,
+    payload: any
+}
+
+Update user reducer with payload
+
+User Reducer
+{ 
+    currentUser:{...}
+}
+
+Pass currentUser as props
+
+### User Reducer
+
+const userReducer = (currentState, action) => {
+    switch (action.type) {
+
+        case 'SET_CURRENT_USER':
+            return {
+                ...currentState,
+                currentUser: action.payload,
+            };
+
+        default:
+            return currentState;
+    }
+};
+
+currentState.currentUser = action.payload will NOT work
+
+default can be currentState and not {...currentState} as it will then re-render
+
+About React
+this.state does not work as obj ref is not changed
+
+this.setState({ 
+
+})
+
+We passes new Object so that new ref is created - new state - new props and re-render occur
+
+
+### Middleware
+Action - Root Reducer
+
+npm i redux-logger
+
+### Wrapping with Provider
+In index.js
+
+import { Provider } from 'react-redux'
+<Provider>
+    <Router>    
+        <App />
+    </Router>
+</Provider>
+
+It will give access to store and reducer
+
+Create redux/root-reducer.js
+It will combine all reducers
+
+Create redux/user/user.reducer.js
+
+Reducer
+fn - state,action
+Also create INITIAL_STATE and set as default parameters to state
+
+Reducer get every single action that ever get fired even if action are not related to reducer
+so default case is necessary
+
+In root-reducer.js
+import { combineReducers } from 'redux';
+
+import userReducer from './user/user.reducer';
+
+export default combineReducers({ user: userReducer });
+
+
+Create redux/store.js
+import { createStore, applyMiddleware } from 'redux';
+import logger from 'redux-logger'
+
+import rootReducer from './root-reducer';
+
+const middleware = [logger];
+
+const store = createStore(rootReducer, applyMiddleware(...middleware));
+export default store;
+
+In index.js
+
+import store from './redux/store';
+<Provider store={store}>
+</Provider>
+
+Create redux/user/user.actions.js
+export const setCurrentUser = user => ({
+    type: 'SET_CURRENT_USER',
+    payload: user,
+});
+
+### connect() and mapStateToProps
+
+It is used to get state into component as props 
+
+In Header where want to pull state slice from store
+import { connect } from 'react-redux';
+
+connect is like withRouter
+Let us modified component so to have access to things related to redux
+Higher order component
+const mapStateToProps = state => ({
+    currentUser: state.user.currentUser,
+});
+export default connect(mapStateToProps)(Header);
+Now we don't need to props to Header
+
+### connect() and mapDispatchToProps
+
+It is used to get reducer which have ability to change state
+
+In App we want to modified state
+
+const mapDispatchToProps = dispatch => ({
+    setCurrentUser: user => dispatch(setCurrentUser(user)),
+});
+export default connect(null, mapDispatchToProps)(App);
+
+dispatch - Pass action that will be passed to every reducer
