@@ -7,7 +7,7 @@ import CartIcon from '../cart-icon/cart-icon.component';
 import CartDropdown from '../cart-dropdown/cart-dropdown.component';
 
 import './header.styles.scss';
-const Header = ({ currentUser }) => {
+const Header = ({ currentUser, hidden }) => {
     const renderUser = () => {
         if (currentUser) {
             return (
@@ -22,6 +22,10 @@ const Header = ({ currentUser }) => {
                 </Link>
             );
         }
+    };
+
+    const handle = () => {
+        console.log('Done');
     };
     return (
         <div className="header">
@@ -38,12 +42,13 @@ const Header = ({ currentUser }) => {
                 {renderUser()}
                 <CartIcon />
             </div>
-            <CartDropdown />
+            {!hidden ? <CartDropdown /> : null}
         </div>
     );
 };
 
-const mapStateToProps = ({ user }) => ({
-    currentUser: user.currentUser,
+const mapStateToProps = ({ user: { currentUser }, cart: { hidden } }) => ({
+    currentUser,
+    hidden,
 });
 export default connect(mapStateToProps)(Header);

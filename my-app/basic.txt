@@ -270,3 +270,69 @@ In this way of storing DropDown state on header we will not be able to manipulat
 On functional component
 
 In this way of storing DropDown state on header we will be able to manipulate state from any other component.(Other than passing it to child component by attr ie method ref for manipulating state). Simply my mapDispatchToProps and connect() on that component to get access by dispatching them to reducer by creating action
+
+# In Reducer
+import CartActionTypes from './cart.types';
+const INITIAL_STATE = {
+    hidden: true,
+};
+const cartReducer = (state = INITIAL_STATE, action) => {
+    switch (action.type) {
+        case CartActionTypes.TOGGLE_CART_HIDDEN:
+            return {
+                ...state,
+                hidden: !state.hidden,
+            };
+        default:
+            return state;
+    }
+};
+export default cartReducer;
+
+We don't need to callback as in setState to change value that is actually from state(mostly done while toggle)
+
+# In Action
+import CartActionTypes from './cart.types';
+
+export const toggleCartHidden = () => ({
+    type: CartActionTypes.TOGGLE_CART_HIDDEN,
+});
+
+Here we don't need payload as in reducer we are not using action.payload
+
+# In Types
+const UserActionTypes = {
+    SET_CURRENT_USER: 'SET_CURRENT_USER',
+};
+export default UserActionTypes;
+
+# Adding to root-reducer
+import cartReducer from './cart/cart.reducer';
+export default combineReducers({ user: userReducer, cart: cartReducer });
+
+# mapDispatchToProps
+
+In cart-item where we need to change state.cart.hidden using action
+
+const mapDispatchToProps = dispatch => ({
+    toggleCartHidden: () => dispatch(toggleCartHidden()),
+});
+export default connect(null, mapDispatchToProps)(CartIcon);
+
+# mapStateToProps
+
+Now to get access to state in header to toggle card-dropdown
+const mapStateToProps = ({ user: { currentUser }, cart: { hidden } }) => ({
+    currentUser,
+    hidden,
+});
+
+Destructing Nested value
+
+const state = {
+    user: { currentUser: '' },
+    cart: { hidden: false }
+}
+
+{ user: { currentUser }, cart: { hidden } } = state
+Only currentUser and hidden will be accessed and not user and cart
