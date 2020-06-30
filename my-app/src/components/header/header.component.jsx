@@ -7,12 +7,9 @@ import CartIcon from '../cart-icon/cart-icon.component';
 import CartDropdown from '../cart-dropdown/cart-dropdown.component';
 
 import './header.styles.scss';
-class Header extends React.Component {
-    state = {
-        isDropDown: false,
-    };
-    renderUser = () => {
-        if (this.props.currentUser) {
+const Header = ({ currentUser }) => {
+    const renderUser = () => {
+        if (currentUser) {
             return (
                 <div className="option" onClick={() => auth.signOut()}>
                     Sign Out
@@ -26,32 +23,25 @@ class Header extends React.Component {
             );
         }
     };
-    handleClick = () => {
-        this.setState(state => ({
-            isDropDown: !state.isDropDown,
-        }));
-    };
-    render() {
-        return (
-            <div className="header">
-                <Link to="/" className="logo-container">
-                    <Logo className="logo"></Logo>
+    return (
+        <div className="header">
+            <Link to="/" className="logo-container">
+                <Logo className="logo"></Logo>
+            </Link>
+            <div className="options">
+                <Link to="/shop" className="option">
+                    Shop
                 </Link>
-                <div className="options">
-                    <Link to="/shop" className="option">
-                        Shop
-                    </Link>
-                    <Link to="/contact" className="option">
-                        Contact
-                    </Link>
-                    {this.renderUser()}
-                    <CartIcon click={this.handleClick} />
-                </div>
-                {this.state.isDropDown ? <CartDropdown /> : null}
+                <Link to="/contact" className="option">
+                    Contact
+                </Link>
+                {renderUser()}
+                <CartIcon />
             </div>
-        );
-    }
-}
+            <CartDropdown />
+        </div>
+    );
+};
 
 const mapStateToProps = ({ user }) => ({
     currentUser: user.currentUser,
