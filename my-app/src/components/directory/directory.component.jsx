@@ -9,12 +9,12 @@ class Directory extends React.Component {
         sections,
     };
 
-    renderMenu = () => {
+    renderMenuItem = () => {
         return this.state.sections.map(({ id, ...other }) => <MenuItem key={id} {...other} />);
     };
 
     render() {
-        return <div className="directory-menu">{this.renderMenu()}</div>;
+        return <div className="directory-menu">{this.renderMenuItem()}</div>;
     }
 }
 
