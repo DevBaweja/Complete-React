@@ -212,3 +212,61 @@ const mapDispatchToProps = dispatch => ({
 export default connect(null, mapDispatchToProps)(App);
 
 dispatch - Pass action that will be passed to every reducer
+We need to dispatch that object
+setCurrentUser is fn that takes user and call dispatch on object
+obtain by setCurrentUser(user) from user.actions
+
+### Redirect
+
+Once user is signed in we need to user to redirect to '/' when they access '/sign'
+
+import {Redirect} from 'react-router-dom'
+
+Also we need currentUser in App
+const mapStateToProps = ({ user }) => {
+    currentUser: user.currentUser;
+};
+
+<Route exact path="/sign" component={SignInAndSignUp} />
+
+We need to render components dynamically
+<Route
+    exact
+    path="/sign"
+    render={() => (this.props.currentUser ? <Redirect to="/" /> : <SignInAndSignUp />)}
+/>
+
+<Route exact path="/sign">
+    {this.props.currentUser ? <Redirect to="/" /> : <SignInAndSignUp />}
+</Route>
+
+Also create user.types.js to remember all the action available to component
+
+### DropDown
+
+# Without Redux state
+Make header class component
+Creating state on header about cartDropDown
+state = {
+    isDropDown: false,
+};
+
+{this.state.isDropDown ? <CartDropdown /> : null}
+
+Also we need to pass method ref as it need to change state
+<CartIcon click={this.handleClick}/>
+
+handleClick = () => {
+    this.setState(state => ({
+        isDropDown: !state.isDropDown,
+    }));
+};
+
+And set onClick on CartIcon component JSX
+
+In this way of storing DropDown state on header we will not be able to manipulate state from any other component.(Other than passing it to child component by attr ie method ref for manipulating state)
+
+# With Redux
+On functional component
+
+In this way of storing DropDown state on header we will be able to manipulate state from any other component.(Other than passing it to child component by attr ie method ref for manipulating state). Simply my mapDispatchToProps and connect() on that component to get access by dispatching them to reducer by creating action

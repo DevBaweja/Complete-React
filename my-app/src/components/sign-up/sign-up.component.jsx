@@ -36,6 +36,7 @@ class SignUp extends React.Component {
             [name]: value,
         });
     };
+
     render() {
         const { displayName, email, password, confirmPassword } = this.state;
         return (
