@@ -5,20 +5,11 @@ import CustomButton from '../custom-button/custom-button.component';
 import { addItem } from '../../redux/cart/cart.actions';
 import './collection-item.styles.scss';
 
-const CollectionItem = ({ item, addItem, cartItems }) => {
+const CollectionItem = ({ item, addItem }) => {
     const { name, price, imageUrl } = item;
+
     const style = { backgroundImage: `url(${imageUrl})` };
-    const text = {
-        new: 'Add to cart',
-        old: 'Add more',
-    };
-    const renderText = () => {
-        const exists = cartItems.find(cur => cur.id === item.id);
-        if (exists) {
-            return text.old;
-        }
-        return text.new;
-    };
+
     return (
         <div className="collection-item">
             <div style={style} className="image" />
@@ -27,15 +18,13 @@ const CollectionItem = ({ item, addItem, cartItems }) => {
                 <span className="price">{price}</span>
             </div>
             <CustomButton inverted onClick={() => addItem(item)}>
-                {renderText()}
+                Add to cart
             </CustomButton>
         </div>
     );
 };
-const mapStateToProps = ({ cart: { cartItems } }) => ({
-    cartItems,
-});
+
 const mapDispatchToProps = dispatch => ({
     addItem: item => dispatch(addItem(item)),
 });
-export default connect(mapStateToProps, mapDispatchToProps)(CollectionItem);
+export default connect(null, mapDispatchToProps)(CollectionItem);
