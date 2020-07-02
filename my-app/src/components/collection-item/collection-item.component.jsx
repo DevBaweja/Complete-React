@@ -1,4 +1,5 @@
 import React from 'react';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import CustomButton from '../custom-button/custom-button.component';
@@ -23,8 +24,6 @@ const CollectionItem = ({ item, alreadyAdded, addItem }) => {
         </div>
     );
 };
+const mapDispatchToProps = dispatch => bindActionCreators({ addItem }, dispatch);
 
-const mapDispatchToProps = dispatch => ({
-    addItem: item => dispatch(addItem(item)),
-});
 export default connect(null, mapDispatchToProps)(CollectionItem);

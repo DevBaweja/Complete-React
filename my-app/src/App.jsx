@@ -1,5 +1,6 @@
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 
@@ -57,8 +58,6 @@ class App extends React.Component {
 const mapStateToProps = createStructuredSelector({
     currentUser: selectCurrentUser,
 });
+const mapDispatchToProps = dispatch => bindActionCreators({ setCurrentUser }, dispatch);
 
-const mapDispatchToProps = dispatch => ({
-    setCurrentUser: user => dispatch(setCurrentUser(user)),
-});
 export default connect(mapStateToProps, mapDispatchToProps)(App);
