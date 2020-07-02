@@ -477,7 +477,51 @@ Input selector can be passed as array or simply arguments
 
 And in every mapStateToProps we replace it by selector from redux and reselect
 
+# In cart-icon
+
 const mapStateToProps = state => ({
     itemCount: selectCartItemsCount(state),
 });
 Instead of destructing we need state and pass it to selector
+
+# In cart dropdown
+const mapStateToProps = state => ({
+    cartItems: selectCartItems(state),
+});
+
+# Also user selector
+import { createSelector } from 'reselect';
+
+const selectUser = state => state.user;
+
+export const selectCurrentUser = createSelector(selectUser, user => user.currentUser);
+
+# In header
+const mapStateToProps = state => ({
+    currentUser: selectCurrentUser(state),
+    hidden: selectCartHidden(state),
+});
+
+### createStructuredSelector in reselect
+
+Places where we need multiple selector
+
+
+const mapStateToProps = state => ({
+    currentUser: selectCurrentUser(state),
+    hidden: selectCartHidden(state),
+});
+
+import { createStructuredSelector } from 'reselect';
+
+const mapStateToProps = createStructuredSelector({
+    currentUser: selectCurrentUser,
+    hidden: selectCartHidden
+})
+It will automatically pass state receive from top level
+Just tell it selector
+
+In App
+const mapStateToProps = createStructuredSelector({
+    currentUser: selectCurrentUser,
+});

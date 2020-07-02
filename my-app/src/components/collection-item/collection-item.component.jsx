@@ -5,7 +5,7 @@ import CustomButton from '../custom-button/custom-button.component';
 import { addItem } from '../../redux/cart/cart.actions';
 import './collection-item.styles.scss';
 
-const CollectionItem = ({ item, addItem }) => {
+const CollectionItem = ({ item, alreadyAdded, addItem }) => {
     const { name, price, imageUrl } = item;
 
     const style = { backgroundImage: `url(${imageUrl})` };
@@ -18,7 +18,7 @@ const CollectionItem = ({ item, addItem }) => {
                 <span className="price">{price}</span>
             </div>
             <CustomButton inverted onClick={() => addItem(item)}>
-                Add to cart
+                {alreadyAdded ? 'Add more' : 'Add to cart'}
             </CustomButton>
         </div>
     );
