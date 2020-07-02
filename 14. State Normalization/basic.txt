@@ -1,0 +1,45 @@
+### Nested Routes
+
+<Route path="/shop" component={ShopPage} />
+
+Since it is component Route passes props into ShopPage component
+If we use it like this
+
+<Route path="/shop">
+    <ShopPage />
+</Route>
+It will not have access to history,location,match
+And we need withRouter for it
+
+# In shop page
+match is accessed as it is in Route component in app 
+
+<Switch>
+    <Route exact path={`${match.path}`} component={CollectionOverview}></Route>
+    <Route path={`${match.path}/:category`} component={CategoryPage}></Route>
+</Switch>
+
+# In CategoryPage
+We again have access to history,location,match due to Route in Shop
+Since in url we have category
+match.params.category
+
+# In shop selector
+
+export const selectShopCollection = collectionUrlParam =>
+    createSelector(selectShopCollection, collections =>
+        collections.find(collection => collection.routeName === collectionUrlParam)
+    );
+
+# in collection component
+
+const mapStateToProps = (state, ownProps) => ({
+    collection: selectShopCollection(ownProps.match.params.collectionType)(state),
+});
+
+It receive it ownProps in case we dynamically want to get access to state
+
+# Instead of array in collection we will store object
+
+# We should use mapStateToProps in main wrapper component
+and pass items to child component
