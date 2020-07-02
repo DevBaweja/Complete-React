@@ -411,3 +411,73 @@ case CartActionTypes.ADD_ITEM:
     };
 
 
+### Selector
+
+Adding itemCount to cart
+
+In cart-icon
+
+const mapStateToProps = ({ cart: { cartItems } }) => {
+    console.log('Recount');
+
+    return {
+        itemCount: cartItems.reduce((prev, cur) => prev + cur.quantity, 0),
+    };
+};
+
+In this case every time state is changed we recalculate itemCount and pass new itemCount
+
+However when we simply pass it from state since state is not changed props remain unchanged and react don't re-render it
+
+When we take slice of state and performing operation based upon state
+
+When we pass new state to redux sice it always returns new object
+mapStateToProps is recalculated and passed as props
+However in most cases those props are same and react don't re-render them
+In selector, we compute some value of state in mapStateToProps then it return new calculated value every time and re-render it
+
+So we use selector to avoid it
+
+### Reselect Memorization and mapStateToProps
+Cachin of selector value
+npm i reselect
+
+redux/cart.selector
+
+import { createSelector } from 'reselect';
+
+// Input Selector
+const selectCart = state => state.cart;
+
+// Output Selector
+export const selectCartItems = createSelector(selectCart, cart => cart.cartItems);
+
+export const selectCartItemsCount = createSelector(selectCartItems, cartItems =>
+    cartItems.reduce((prev, cur) => prev + cur.quantity, 0)
+);
+
+Input Selector uses state and returns slice of state
+Output selector uses input/output selector and createSelector to return slice of state
+
+By createSelector we create memorized selector
+createSelector(
+    [selectCart,selectUser],
+    (cart, user) => ({ 
+
+    })
+)
+
+createSelector(
+    selectUser,
+    selectCart,
+    (cart, user) => ({})
+)
+
+Input selector can be passed as array or simply arguments
+
+And in every mapStateToProps we replace it by selector from redux and reselect
+
+const mapStateToProps = state => ({
+    itemCount: selectCartItemsCount(state),
+});
+Instead of destructing we need state and pass it to selector
