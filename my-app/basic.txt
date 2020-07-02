@@ -525,3 +525,46 @@ In App
 const mapStateToProps = createStructuredSelector({
     currentUser: selectCurrentUser,
 });
+
+### Checkout Page and Nesting Higher Ordeer Component 
+
+Create new checkout page
+
+In cart dropdown
+Need history to push '/checkout' on click
+
+withRouter
+export default withRouter(connect(mapStateToProps)(CartDropdown));
+
+<CustomButton onClick={() => history.push('/checkout')}>Go to checkout</CustomButton>
+This only work as we spread attr in CustomButton as it is treated as props and not event handler
+
+Also about event delegation we are attaching event handlers to each of item as we have access to item
+
+### Dispatch Action
+
+In dropdown once user click checkout page we can toggle dropdown
+const mapDispatchToProps = dispatch => ({
+    toggleCartHidden: () => dispatch(toggleCartHidden()),
+});
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CartDropdown));
+
+
+Add dispatch will be available as props
+const clickHandler = () => {
+    history.push('/checkout');
+    dispatch(toggleCartHidden());
+};
+<CustomButton onClick={clickHandler}>Go to checkout</CustomButton>
+
+export default withRouter(connect(mapStateToProps)(CartDropdown));
+
+Also connect passes dispatch to props if we don't specify mapDispatchToProps as argument
+And in component we can call any action needed
+
+ie Instead of dispatched function we can manually dispatch it in component
+
+Passing argument in click handler we can return new function from there
+
+&#10005
+UTF-8
