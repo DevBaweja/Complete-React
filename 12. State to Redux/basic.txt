@@ -1,0 +1,11 @@
+### Defining the mapDispatchToProps Function with bindActionCreators
+import { bindActionCreators } from 'redux'
+
+
+const mapDispatchToProps = dispatch => ({
+    clearItem: item => dispatch(clearItem(item)),
+    addItem: item => dispatch(addItem(item)),
+    removeItem: item => dispatch(removeItem(item)),
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators({ clearItem, addItem, removeItem }, dispatch);
