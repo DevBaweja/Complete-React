@@ -40,3 +40,6 @@ const mapStateToProps = (state, ownProps) => ({
 It receive it ownProps in case we dynamically want to get access to state
 
 # Instead of array in collection we will store object
+
+# We should use mapStateToProps in main wrapper component
+and pass items to child component
