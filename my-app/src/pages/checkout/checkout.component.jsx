@@ -10,11 +10,27 @@ import CheckoutItem from '../../components/checkout-item/checkout-item.component
 import './checkout.styles.scss';
 
 const CheckoutPage = ({ cartItems, total }) => {
+    const checkout = ['Product', 'Description', 'Quantity', 'Price', 'Remove'];
+
     const renderCartItems = () => {
         return cartItems.map(item => <CheckoutItem key={item.id} cartItem={item} />);
     };
 
-    const checkout = ['Product', 'Description', 'Quantity', 'Price', 'Remove'];
+    const renderTotal = () => {
+        if (cartItems.length) {
+            return (
+                <div className="total">
+                    <span>Total: ${total}</span>
+                </div>
+            );
+        } else {
+            return (
+                <div className="">
+                    <span>Your checkout is empty</span>
+                </div>
+            );
+        }
+    };
 
     return (
         <div className="checkout-page">
@@ -22,9 +38,7 @@ const CheckoutPage = ({ cartItems, total }) => {
 
             {renderCartItems()}
 
-            <div className="total">
-                <span>Total: ${total}</span>
-            </div>
+            {renderTotal()}
         </div>
     );
 };
