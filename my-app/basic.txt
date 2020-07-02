@@ -9,3 +9,5 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({ clearItem, addItem, removeItem }, dispatch);
+
+### Nested routes of shop page
