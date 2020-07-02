@@ -1,570 +1,80 @@
-### Redux
+### Session Storage and Local Storage
 
-npm i redux react-redux
+Session storage is persistent untill we close browser(ie reload will unaffected)
+Local storage is persistent untill we manually remove items from local storage
 
-State Management Library
-1. Single Source of truth
-2. State is read only
-3. Changes using pure function
+### Local Storage
+window.localStorage
+this.localStorage
 
-Single Source of truth
-One massive state object where all of data is stored in App
+getItem
+setItem
 
-State is read only
-State created by redux will not be modified. We will create new state every time
+localStorage store string only
 
-Changes using pure function
-ie this.state = {modified: value} is unaccepted use only pure function
+JSON.stringify
+JSON.parse
 
+### Redux Persist
 
-### keywords
-Action
-Root Reducer
-Store
-DOM changes
+npm i redux-persist
 
-Action
-User does action
-
-Root Reducer
-fn - receive action and create state/store
-
-Store
-Entire state of app
-
-DOM changes
-Then dom changes happens by react
-
-### FLUX Pattern
-
-Action - Dispatcher - Store - View
-One way data flow
-
-MVC Pattern
-Action - Controller - Model - View
-
-##  Create a React Redux App
-The recommended way to start new apps with React and Redux is by using the official Redux+JS template for Create React App, which takes advantage of Redux Toolkit and React Redux's integration with React components.
-
-npx create-react-app my-app --template redux
-
-### Props Drilling
-
-In router we get info about history,location,match by withRouter
-Higher Order Functional Components
-
-However in case of other props such as current user
-We need some sort of higher order functional component
-
-So we may think to put state in component that need it
-However state may be needed by another component
-We cann't declare multiple instances of same properties in state of each component
-As it might create some inconsistencies and also DRY principle is unjustified
-
-One single source of state and then any component have access to that without being passed along as props
-
-Home,User,Shop Component
-Generate action and does some setState
-
-Home,User,Shop Reducer (Slice of State)
-These action will only update that Reducer
-
-Root Reducer(App state)
-Contain all reducers
-
-Pass state as props
-
-### Working
-
-Component
-
-trigger action - set_current_user
-
-{ 
-    type: string,
-    payload: any
-}
-
-Update user reducer with payload
-
-User Reducer
-{ 
-    currentUser:{...}
-}
-
-Pass currentUser as props
-
-### User Reducer
-
-const userReducer = (currentState, action) => {
-    switch (action.type) {
-
-        case 'SET_CURRENT_USER':
-            return {
-                ...currentState,
-                currentUser: action.payload,
-            };
-
-        default:
-            return currentState;
-    }
-};
-
-currentState.currentUser = action.payload will NOT work
-
-default can be currentState and not {...currentState} as it will then re-render
-
-return {
-    ...currentState,
-    currentUser: action.payload,
-};
-This way of setting currentUser even there is also currentUser when we spread currentState
-is due to fact that while spreading overwrite occur over same properties LAST ONE is considered
-return {
-    cartItems: [...state.cartItems, action.payload],
-    ...state,
-}; 
-will NOT work it will return state as it without overwrite cartItems
-
-About React
-this.state does not work as obj ref is not changed
-
-this.setState({ 
-
-})
-
-We passes new Object so that new ref is created - new state - new props and re-render occur
-
-
-### Middleware
-Action - Root Reducer
-
-npm i redux-logger
-
-### Wrapping with Provider
-In index.js
-
-import { Provider } from 'react-redux'
-<Provider>
-    <Router>    
-        <App />
-    </Router>
-</Provider>
-
-It will give access to store and reducer
-
-Create redux/root-reducer.js
-It will combine all reducers
-
-Create redux/user/user.reducer.js
-
-Reducer
-fn - state,action
-Also create INITIAL_STATE and set as default parameters to state
-
-Reducer get every single action that ever get fired even if action are not related to reducer
-so default case is necessary
-
-In root-reducer.js
-import { combineReducers } from 'redux';
-
-import userReducer from './user/user.reducer';
-
-export default combineReducers({ user: userReducer });
-
-
-Create redux/store.js
-import { createStore, applyMiddleware } from 'redux';
-import logger from 'redux-logger'
-
-import rootReducer from './root-reducer';
-
-const middleware = [logger];
+# In Store
+import { persistStore } from 'redux-persist';
 
 const store = createStore(rootReducer, applyMiddleware(...middleware));
-export default store;
+const persistor = persistStore(store);
 
-In index.js
+export default { store, persistor };
 
-import store from './redux/store';
-<Provider store={store}>
-</Provider>
+We can also export simply both or default with both
 
-Create redux/user/user.actions.js
-export const setCurrentUser = user => ({
-    type: 'SET_CURRENT_USER',
-    payload: user,
-});
+# In Root Reducer
 
-### connect() and mapStateToProps
+import { persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 
-It is used to get state into component as props 
-
-In Header where want to pull state slice from store
-import { connect } from 'react-redux';
-
-connect is like withRouter
-Let us modified component so to have access to things related to redux
-Higher order component
-const mapStateToProps = state => ({
-    currentUser: state.user.currentUser,
-});
-export default connect(mapStateToProps)(Header);
-Now we don't need to props to Header
-
-### connect() and mapDispatchToProps
-
-It is used to get reducer which have ability to change state
-
-In App we want to modified state
-
-const mapDispatchToProps = dispatch => ({
-    setCurrentUser: user => dispatch(setCurrentUser(user)),
-});
-export default connect(null, mapDispatchToProps)(App);
-
-dispatch - Pass action that will be passed to every reducer
-We need to dispatch that object
-setCurrentUser is fn that takes user and call dispatch on object
-obtain by setCurrentUser(user) from user.actions
-
-### Redirect
-
-Once user is signed in we need to user to redirect to '/' when they access '/sign'
-
-import {Redirect} from 'react-router-dom'
-
-Also we need currentUser in App
-const mapStateToProps = ({ user }) => {
-    currentUser: user.currentUser;
+const persistConfig = {
+    key: 'root',
+    storage,
+    whitelist: ['cart'],
 };
+const rootReducer = combineReducers({ user: userReducer, cart: cartReducer });
+export default persistReducer(persistConfig, rootReducer);
 
-<Route exact path="/sign" component={SignInAndSignUp} />
+# In Index
 
-We need to render components dynamically
-<Route
-    exact
-    path="/sign"
-    render={() => (this.props.currentUser ? <Redirect to="/" /> : <SignInAndSignUp />)}
-/>
+Wrapping App with PersistGate
+import { PersistGate as Persist } from 'redux-persist/integration/react';
 
-<Route exact path="/sign">
-    {this.props.currentUser ? <Redirect to="/" /> : <SignInAndSignUp />}
-</Route>
+import { store, persistor } from './redux/store';
+<Persist persistor={persistor}>
+    <App />
+</Persist>
 
-Also create user.types.js to remember all the action available to component
 
-### DropDown
-
-# Without Redux state
-Make header class component
-Creating state on header about cartDropDown
-state = {
-    isDropDown: false,
-};
-
-{this.state.isDropDown ? <CartDropdown /> : null}
-
-Also we need to pass method ref as it need to change state
-<CartIcon click={this.handleClick}/>
-
-handleClick = () => {
-    this.setState(state => ({
-        isDropDown: !state.isDropDown,
-    }));
-};
-
-And set onClick on CartIcon component JSX
-
-In this way of storing DropDown state on header we will not be able to manipulate state from any other component.(Other than passing it to child component by attr ie method ref for manipulating state)
-
-# With Redux
-On functional component
-
-In this way of storing DropDown state on header we will be able to manipulate state from any other component.(Other than passing it to child component by attr ie method ref for manipulating state). Simply my mapDispatchToProps and connect() on that component to get access by dispatching them to reducer by creating action
-
-# In Reducer
-import CartActionTypes from './cart.types';
-const INITIAL_STATE = {
-    hidden: true,
-};
-const cartReducer = (state = INITIAL_STATE, action) => {
-    switch (action.type) {
-        case CartActionTypes.TOGGLE_CART_HIDDEN:
-            return {
-                ...state,
-                hidden: !state.hidden,
-            };
-        default:
-            return state;
-    }
-};
-export default cartReducer;
-
-We don't need to callback as in setState to change value that is actually from state(mostly done while toggle)
-
-# In Actions
-import CartActionTypes from './cart.types';
-
-export const toggleCartHidden = () => ({
-    type: CartActionTypes.TOGGLE_CART_HIDDEN,
-});
-
-Here we don't need payload as in reducer we are not using action.payload
-
-# In Types
-const UserActionTypes = {
-    SET_CURRENT_USER: 'SET_CURRENT_USER',
-};
-export default UserActionTypes;
-
-# Adding to root-reducer
-import cartReducer from './cart/cart.reducer';
-export default combineReducers({ user: userReducer, cart: cartReducer });
-
-# mapDispatchToProps
-
-In cart-item where we need to change state.cart.hidden using action
-
-const mapDispatchToProps = dispatch => ({
-    toggleCartHidden: () => dispatch(toggleCartHidden()),
-});
-export default connect(null, mapDispatchToProps)(CartIcon);
-
-# mapStateToProps
-
-Now to get access to state in header to toggle card-dropdown
-const mapStateToProps = ({ user: { currentUser }, cart: { hidden } }) => ({
-    currentUser,
-    hidden,
-});
-
-Destructing Nested value
-
-const state = {
-    user: { currentUser: '' },
-    cart: { hidden: false }
+# Ex
+import { combineReducers } from 'redux'
+import { persistReducer } from 'redux-persist'
+import storage from 'redux-persist/lib/storage'
+ 
+import { authReducer, otherReducer } from './reducers'
+ 
+const rootPersistConfig = {
+  key: 'root',
+  storage: storage,
+  blacklist: ['auth']
 }
-
-{ user: { currentUser }, cart: { hidden } } = state
-Only currentUser and hidden will be accessed and not user and cart
-
-### Add Item
-
-In add item simply pushing or adding via spread will not work we need to have grouping of same item
-
-# In Reducer
-
-const INITIAL_STATE = {
-    hidden: true,
-    cartItems: [],
-};
-
-case CartActionTypes.ADD_ITEM:
-    return {
-        ...state,
-        cartItems: [...cartItems,action.payload]
-    };
-
-# In Actions
-
-export const addItem = item => ({
-    type: CartActionTypes.ADD_ITEM,
-    payload: item,
-});
-
-# In Types
-
-const CartActionTypes = {
-    TOGGLE_CART_HIDDEN: 'TOGGLE_CART_HIDDEN',
-    ADD_ITEM: 'ADD_ITEM',
-};
-
-# In CollectionItem component
-
-const mapDispatchToProps = dispatch => ({
-    addItem: item => dispatch(addItem(item)),
-});
-export default connect(null, mapDispatchToProps)(CollectionItem)
-
-<CustomButton inverted onClick={() => addItem(item)}>
-    Add to cart
-</CustomButton>
-
-### Grouping items in cart.reducer
-
-Create cart.util.js
-export const addItemToCart = (items, newItem) => {
-    const exists = items.find(item => item.id === newItem.id);
-    if (exists) {
-        return items.map(item => (item.id === newItem.id ? { ...item, quantity: item.quantity + 1 } : item));
-    }
-
-    return [...items, { ...newItem, quantity: 1 }];
-};
-
-# In reducer
-case CartActionTypes.ADD_ITEM:
-    return {
-        ...state,
-        cartItems: addItemToCart(state.cartItems, action.payload),
-    };
-
-
-### Selector
-
-Adding itemCount to cart
-
-In cart-icon
-
-const mapStateToProps = ({ cart: { cartItems } }) => {
-    console.log('Recount');
-
-    return {
-        itemCount: cartItems.reduce((prev, cur) => prev + cur.quantity, 0),
-    };
-};
-
-In this case every time state is changed we recalculate itemCount and pass new itemCount
-
-However when we simply pass it from state since state is not changed props remain unchanged and react don't re-render it
-
-When we take slice of state and performing operation based upon state
-
-When we pass new state to redux sice it always returns new object
-mapStateToProps is recalculated and passed as props
-However in most cases those props are same and react don't re-render them
-In selector, we compute some value of state in mapStateToProps then it return new calculated value every time and re-render it
-
-So we use selector to avoid it
-
-### Reselect Memorization and mapStateToProps
-Cachin of selector value
-npm i reselect
-
-redux/cart.selector
-
-import { createSelector } from 'reselect';
-
-// Input Selector
-const selectCart = state => state.cart;
-
-// Output Selector
-export const selectCartItems = createSelector(selectCart, cart => cart.cartItems);
-
-export const selectCartItemsCount = createSelector(selectCartItems, cartItems =>
-    cartItems.reduce((prev, cur) => prev + cur.quantity, 0)
-);
-
-Input Selector uses state and returns slice of state
-Output selector uses input/output selector and createSelector to return slice of state
-
-By createSelector we create memorized selector
-createSelector(
-    [selectCart,selectUser],
-    (cart, user) => ({ 
-
-    })
-)
-
-createSelector(
-    selectUser,
-    selectCart,
-    (cart, user) => ({})
-)
-
-Input selector can be passed as array or simply arguments
-
-And in every mapStateToProps we replace it by selector from redux and reselect
-
-# In cart-icon
-
-const mapStateToProps = state => ({
-    itemCount: selectCartItemsCount(state),
-});
-Instead of destructing we need state and pass it to selector
-
-# In cart dropdown
-const mapStateToProps = state => ({
-    cartItems: selectCartItems(state),
-});
-
-# Also user selector
-import { createSelector } from 'reselect';
-
-const selectUser = state => state.user;
-
-export const selectCurrentUser = createSelector(selectUser, user => user.currentUser);
-
-# In header
-const mapStateToProps = state => ({
-    currentUser: selectCurrentUser(state),
-    hidden: selectCartHidden(state),
-});
-
-### createStructuredSelector in reselect
-
-Places where we need multiple selector
-
-
-const mapStateToProps = state => ({
-    currentUser: selectCurrentUser(state),
-    hidden: selectCartHidden(state),
-});
-
-import { createStructuredSelector } from 'reselect';
-
-const mapStateToProps = createStructuredSelector({
-    currentUser: selectCurrentUser,
-    hidden: selectCartHidden
+ 
+const authPersistConfig = {
+  key: 'auth',
+  storage: storage,
+  blacklist: ['somethingTemporary']
+}
+ 
+const rootReducer = combineReducers({
+  auth: persistReducer(authPersistConfig, authReducer),
+  other: otherReducer,
 })
-It will automatically pass state receive from top level
-Just tell it selector
-
-In App
-const mapStateToProps = createStructuredSelector({
-    currentUser: selectCurrentUser,
-});
-
-### Checkout Page and Nesting Higher Ordeer Component 
-
-Create new checkout page
-
-In cart dropdown
-Need history to push '/checkout' on click
-
-withRouter
-export default withRouter(connect(mapStateToProps)(CartDropdown));
-
-<CustomButton onClick={() => history.push('/checkout')}>Go to checkout</CustomButton>
-This only work as we spread attr in CustomButton as it is treated as props and not event handler
-
-Also about event delegation we are attaching event handlers to each of item as we have access to item
-
-### Dispatch Action
-
-In dropdown once user click checkout page we can toggle dropdown
-const mapDispatchToProps = dispatch => ({
-    toggleCartHidden: () => dispatch(toggleCartHidden()),
-});
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CartDropdown));
-
-
-Add dispatch will be available as props
-const clickHandler = () => {
-    history.push('/checkout');
-    dispatch(toggleCartHidden());
-};
-<CustomButton onClick={clickHandler}>Go to checkout</CustomButton>
-
-export default withRouter(connect(mapStateToProps)(CartDropdown));
-
-Also connect passes dispatch to props if we don't specify mapDispatchToProps as argument
-And in component we can call any action needed
-
-ie Instead of dispatched function we can manually dispatch it in component
-
-Passing argument in click handler we can return new function from there
-
-&#10005
-UTF-8
+ 
+export default persistReducer(rootPersistConfig, rootReducer)
