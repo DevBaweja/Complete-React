@@ -6,15 +6,21 @@ import CollectionItem from '../collection/collection.component';
 
 import './shop.styles.scss';
 
-const Shop = ({ match }) => {
-    return (
-        <div className="shop">
-            <Switch>
-                <Route exact path={`${match.path}`} component={CollectionOverview}></Route>
-                <Route path={`${match.path}/:collectionType`} component={CollectionItem}></Route>
-            </Switch>
-        </div>
-    );
-};
+class Shop extends React.Component {
+    unsubscribeFromAuth = null;
+
+    componentDidMount() {}
+    render() {
+        const { match } = this.props;
+        return (
+            <div className="shop">
+                <Switch>
+                    <Route exact path={`${match.path}`} component={CollectionOverview}></Route>
+                    <Route path={`${match.path}/:collectionType`} component={CollectionItem}></Route>
+                </Switch>
+            </div>
+        );
+    }
+}
 
 export default Shop;
