@@ -1,2 +1,58 @@
 ### Higher order components
 Takes another component and returns new component
+
+import React from 'react';
+
+const withData = (WrappedComponent, dataSource) => {
+    class WithData extends React.Component {
+        state = {
+            data: [],
+        };
+
+        componentDidMount = async () => {
+            const res = await fetch(`http://jsonplaceholder.typicode.com/${dataSource}`);
+            const data = await res.json();
+            this.setState({ data: data.splice(0, 5) });
+        };
+
+        render() {
+            if (this.state.data.length === 0) return <h1>Loading</h1>;
+            else return <WrappedComponent data={this.state.data} {...this.props} />;
+        }
+    }
+    return WithData;
+};
+export default withData;
+
+import React from 'react';
+import withData from '../../withData';
+
+const UserList = ({ data }) => {
+    const renderUsers = () => {
+        return data.map(user => (
+            <div className="user" key={user.id}>
+                <h3>{user.name}</h3>
+                <p>{user.email}</p>
+            </div>
+        ));
+    };
+
+    return (
+        <div className="container">
+            <h1>User List</h1>
+            {renderUsers()}
+        </div>
+    );
+};
+
+export default withData(UserList, 'users');
+
+## Passing as props
+
+export default withData(UserList);
+
+<UserList dataSource = 'url' />
+Higher order component will have access to the dataSource
+
+Also we must spread all props of higher order component so that
+component get access to all its props
