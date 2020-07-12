@@ -8,8 +8,8 @@ class App extends React.Component {
     render() {
         return (
             <div className="app">
-                <UserList />
-                <UserProfile name="Dev Baweja" email="devbaweja576@gmail.com" />
+                <UserList dataSource="users" />
+                <UserProfile dataSource="posts" name="Dev Baweja" email="devbaweja576@gmail.com" />
             </div>
         );
     }

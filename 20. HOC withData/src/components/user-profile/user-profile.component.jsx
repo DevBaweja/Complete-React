@@ -20,4 +20,4 @@ const UserProfile = ({ data, name, email }) => {
     );
 };
 
-export default withData(UserProfile, 'posts');
+export default withData(UserProfile);

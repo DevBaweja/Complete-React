@@ -19,4 +19,4 @@ const UserList = ({ data }) => {
     );
 };
 
-export default withData(UserList, 'users');
+export default withData(UserList);
