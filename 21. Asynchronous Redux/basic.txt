@@ -1,0 +1,28 @@
+### 
+Firebase live-reload style of event handing
+
+Idea of subscriptions
+Observable - RxJS
+
+next,error,complete
+
+Essentially there are just these three methods
+that is passed to stream of data or observable
+
+Rxjs
+
+### Promise Based
+fetch(
+    'https://firestore.googleapis.com/v1/projects/crown-clothing-3518d/databases/(default)/documents/collection'
+)
+    .then(response => response.json())
+    .then(collections => console.log(collections));
+then catch 
+
+### Async call in redux
+
+redux-thunk
+Add thunk as middleware in store
+
+if redux-thunk middleware is enabled, any timr we dispatch fn instead of object
+middleware will call that fn with dispatch method itself as an first argument
