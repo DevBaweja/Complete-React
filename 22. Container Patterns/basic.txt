@@ -1,0 +1,4 @@
+### Container Pattern
+const CollectionOverviewContainer = compose(connect(mapStateToProps), WithSpinner)(CollectionOverview);
+
+connect(mapStateToProps)(WithSpinner(CollectionOverviewContainer))
