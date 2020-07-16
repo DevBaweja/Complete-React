@@ -1,7 +1,5 @@
 import ShopActionTypes from './shop.types';
 
-import { firestore, convertCollectionsSnapshotToMap } from '../../firebase/firebase.utils';
-
 export const fetchCollectionsStart = () => ({
     type: ShopActionTypes.FETCH_COLLECTIONS_START,
 });
@@ -16,6 +14,8 @@ export const fetchCollectionsFailure = error => ({
     payload: error,
 });
 
+// Passing fn as action object is possible here due to thunk
+/*
 export const fetchCollections = () => {
     return async dispatch => {
         const collectionRef = firestore.collection('collection');
@@ -30,3 +30,4 @@ export const fetchCollections = () => {
         }
     };
 };
+*/

@@ -6,14 +6,14 @@ import { connect } from 'react-redux';
 import CollectionOverviewContainer from '../../components/collection-overview/collection-overview.container';
 import CollectionPageContainer from '../collection/collection.component';
 
-import { fetchCollections } from '../../redux/shop/shop.actions';
+import { fetchCollectionsStart } from '../../redux/shop/shop.actions';
 
 import './shop.styles.scss';
 
 class Shop extends React.Component {
     componentDidMount() {
-        const { fetchCollections } = this.props;
-        fetchCollections();
+        const { fetchCollectionsStart } = this.props;
+        fetchCollectionsStart();
     }
     render() {
         const { match } = this.props;
@@ -28,6 +28,6 @@ class Shop extends React.Component {
     }
 }
 
-const mapDispatchToProps = dispatch => bindActionCreators({ fetchCollections }, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({ fetchCollectionsStart }, dispatch);
 
 export default connect(null, mapDispatchToProps)(Shop);
