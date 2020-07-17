@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { bindActionCreators } from 'redux';
 import { Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -10,23 +10,26 @@ import { fetchCollectionsStart } from '../../redux/shop/shop.actions';
 
 import './shop.styles.scss';
 
-class Shop extends React.Component {
-    componentDidMount() {
-        const { fetchCollectionsStart } = this.props;
+const Shop = ({ match, fetchCollectionsStart }) => {
+    useEffect(() => {
         fetchCollectionsStart();
-    }
-    render() {
-        const { match } = this.props;
-        return (
-            <div className="shop">
-                <Switch>
-                    <Route exact path={`${match.path}`} component={CollectionOverviewContainer}></Route>
-                    <Route path={`${match.path}/:collectionType`} component={CollectionPageContainer}></Route>
-                </Switch>
-            </div>
-        );
-    }
-}
+    }, [fetchCollectionsStart]);
+    // ComponentWillUnmount
+    /*
+    useEffect(() => {
+        Clean Up fn
+        return () => {};
+    });
+    */
+    return (
+        <div className="shop">
+            <Switch>
+                <Route exact path={`${match.path}`} component={CollectionOverviewContainer}></Route>
+                <Route path={`${match.path}/:collectionType`} component={CollectionPageContainer}></Route>
+            </Switch>
+        </div>
+    );
+};
 
 const mapDispatchToProps = dispatch => bindActionCreators({ fetchCollectionsStart }, dispatch);
 
