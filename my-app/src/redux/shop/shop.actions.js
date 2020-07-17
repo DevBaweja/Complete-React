@@ -9,9 +9,9 @@ export const fetchCollectionsSuccess = collectionsMap => ({
     payload: collectionsMap,
 });
 
-export const fetchCollectionsFailure = error => ({
+export const fetchCollectionsFailure = err => ({
     type: ShopActionTypes.FETCH_COLLECTIONS_FAILURE,
-    payload: error,
+    payload: err,
 });
 
 // Passing fn as action object is possible here due to thunk
