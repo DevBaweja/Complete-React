@@ -1,0 +1,65 @@
+### Custom hooks
+
+effects > use-fetch.effect.js
+
+import {useState, useEffect} from 'react';
+
+const useFetch = (url) => {
+    const [data, setData] = useState(null);
+    
+    useEffect(() => {
+        const fetchData = async () => {
+            const res = await fetch(url);
+            const data = await res.json();
+            setData(data);
+        }
+        fetchData();
+    },[url])
+
+    return data; 
+}
+export default useFetch;
+
+### useReducer
+
+# Types
+const actionTypes = {
+    SET_USER : 'SET_USER',
+    SET_SEARCH_QUERY: 'SET_SEARCH_QUERY',
+}
+# Actions
+const setUser = user => ({
+    type: actionTypes.SET_USER,
+    payload: user
+});
+const setSearchQuery = searchQuery => ({
+    type: actionTypes.SET_SEARCH_QUERY,
+    payload: searchQuery
+})
+
+# Reducer
+const INITIAL_STATE = {
+    user: null,
+    searchQuery: '',
+};
+const reducer = (state, action) => {
+    switch (action.type) {
+        case actionTypes.SET_USER: 
+        return {
+            ...state,
+            user: action.payload
+        }
+        case actionTypes.SET_SEARCH_QUERY:
+        return {
+            ...state,
+            searchQuery: action.payload
+        }
+        default:
+        return state;
+    }
+}
+
+# In Component
+const [state, dispatch] = useReducer(reducer, INITIAL_STATE)
+
+Here state and dispatch are mapStateToProps and mapDispatchToProps
