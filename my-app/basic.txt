@@ -29,6 +29,37 @@ import CollectionsContext from '../../contexts/collections/collections.context';
 }
 </CollectionsContext.Consumer>
 
+import React from 'react';
+
+import CollectionItem from '../../components/collection-item/collection-item.component';
+
+import CollectionsContext from '../../contexts/collections/collections.context';
+
+import './collection.styles.scss';
+
+const CollectionPage = ({ match }) => {
+    const renderCollectionItem = items => {
+        return items.map(item => <CollectionItem key={item.id} item={item} />);
+    };
+    return (
+        <CollectionsContext.Consumer>
+            {collections => {
+                const collection = collections[match.params.collectionType];
+                const { title, items } = collection;
+
+                return (
+                    <div className="collection-page">
+                        <h2 className="title">{title}</h2>
+                        <div className="items">{renderCollectionItem(items)}</div>
+                    </div>
+                );
+            }}
+        </CollectionsContext.Consumer>
+    );
+};
+
+export default CollectionPage;
+
 Wrap it around where we want to use state
 
 # Consuming context with useContext
@@ -36,6 +67,29 @@ Wrap it around where we want to use state
 import { useContext } from 'react';
 
 const collections = useContext(CollectionsContext);
+
+import React, { useContext } from 'react';
+import CollectionItem from '../../components/collection-item/collection-item.component';
+import CollectionsContext from '../../contexts/collections/collections.context';
+import './collection.styles.scss';
+
+const CollectionPage = ({ match }) => {
+    const collections = useContext(CollectionsContext);
+    const collection = collections[match.params.collectionType];
+    const { title, items } = collection;
+
+    const renderCollectionItem = () => {
+        return items.map(item => <CollectionItem key={item.id} item={item} />);
+    };
+    return (
+        <div className="collection-page">
+            <h2 className="title">{title}</h2>
+            <div className="items">{renderCollectionItem()}</div>
+        </div>
+    );
+};
+
+export default CollectionPage;
 
 (mapDispatchToProps)
 # Setting Actions in Context
