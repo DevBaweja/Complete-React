@@ -1,7 +1,5 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## [Go to Website](https://crwn-clothing-devapps.herokuapp.com/)
-
 ## Available Scripts
 
 In the project directory, you can run:
