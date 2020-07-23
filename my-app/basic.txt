@@ -1,165 +1,100 @@
-### Context API
+### GraphQL
 
+Query language for API
+Server language that wraps around backend
 
-### Context API
+REST(Representational State Transfer)
 
-The Context API is a neat way to pass state across the app without having to use props. The Context API was introduced to allow you to pass state (and enable the state to update) across the app, without having to use props for it.
+Related data
+Over fetching data
 
-# Creating new context
+/users
+/users/:userId/posts
+/posts/:postId/comments
 
-In contexts/collections/collections.context
+/graphql 
+users{
+    id
+    name
+}
+posts(userId){
+    id
+    title
+    content
+}
 
-import { createContext } from 'react';
-import collections from './shop.data';
+comments(postId){
+    id
+    content
+}
 
-const CollectionsContext = createContext(collections);
+Query or Mutation
 
-export default CollectionsContext;
-
-(mapStateToProps)
-# Consuming context with Consumer Component
-
-import CollectionsContext from '../../contexts/collections/collections.context';
-
-<CollectionsContext.Consumer>
-{
-    collections => {
-        return jsx;
+query{
+    collection{
+        id
     }
 }
-</CollectionsContext.Consumer>
+Prisma
 
-import React from 'react';
+type Collection{ 
+    id: ID!
+    title: String!
+    items: [Item!]!
+}
 
-import CollectionItem from '../../components/collection-item/collection-item.component';
+type Item{ 
+    id: ID!
+    name: String!
+    price: Float!
+    imageUrl: String
+}
 
-import CollectionsContext from '../../contexts/collections/collections.context';
+! - Manditory
 
-import './collection.styles.scss';
+type Query{ 
+    collections: [Collection!]!
+    collection(id: ID!): Collection
+    getCollectionByTitle(title: String!): Collection 
+}
 
-const CollectionPage = ({ match }) => {
-    const renderCollectionItem = items => {
-        return items.map(item => <CollectionItem key={item.id} item={item} />);
-    };
-    return (
-        <CollectionsContext.Consumer>
-            {collections => {
-                const collection = collections[match.params.collectionType];
-                const { title, items } = collection;
-
-                return (
-                    <div className="collection-page">
-                        <h2 className="title">{title}</h2>
-                        <div className="items">{renderCollectionItem(items)}</div>
-                    </div>
-                );
-            }}
-        </CollectionsContext.Consumer>
-    );
-};
-
-export default CollectionPage;
-
-Wrap it around where we want to use state
-
-# Consuming context with useContext
-
-import { useContext } from 'react';
-
-const collections = useContext(CollectionsContext);
-
-import React, { useContext } from 'react';
-import CollectionItem from '../../components/collection-item/collection-item.component';
-import CollectionsContext from '../../contexts/collections/collections.context';
-import './collection.styles.scss';
-
-const CollectionPage = ({ match }) => {
-    const collections = useContext(CollectionsContext);
-    const collection = collections[match.params.collectionType];
-    const { title, items } = collection;
-
-    const renderCollectionItem = () => {
-        return items.map(item => <CollectionItem key={item.id} item={item} />);
-    };
-    return (
-        <div className="collection-page">
-            <h2 className="title">{title}</h2>
-            <div className="items">{renderCollectionItem()}</div>
-        </div>
-    );
-};
-
-export default CollectionPage;
-
-(mapDispatchToProps)
-# Setting Actions in Context
-
-We need to have component state
-<CollectionsContext.Provider value={this.state.user}>
-</CollectionsContext.Provider>
-
-Consumer looks for Provider in tree
-
-### Current User Context
-
-# createContext
-
-import { createContext } from 'react';
-
-const CurrentUserContext = createContext(null);
-
-export default CurrentUserContext;
-
-
-# Provider
-
-<CurrentUserContext.Provider value={this.state.currentUser}>
-    <Header />
-</CurrentUserContext.Provider>
-
-To have value change and reach out to every consumer we must have local state
-
-const renderUser = currentUser => {
-    if (currentUser) {
-        return (
-            <div className="option" onClick={() => auth.signOut()}>
-                Sign Out
-            </div>
-        );
-    } else {
-        return (
-            <Link to="sign" className="option">
-                Sign In
-            </Link>
-        );
+query{
+    collections { 
+        id
+        title
+        items{
+            id
+            name
+            price
+            imageUrl
+        }
     }
-};
+}
 
-<CurrentUserContext.Consumer>{renderUser}</CurrentUserContext.Consumer>
-<CurrentUserContext.Consumer>{currentUser => renderUser(currentUser)}</CurrentUserContext.Consumer>
 
-# Create .Components like Util.Heading Util.Paragraph
-### Cart Toggle Hidden
 
-# Creating Context
-import { createContext } from 'react';
+query{
+ 	collection(id: "cjwuuj5bz000i0719rrtw5gqk"){
+    id
+    title
+        items{
+            id
+            name
+            price
+            imageUrl
+        }
+  }
+}
 
-const CartContext = createContext({
-    hidden: true,
-    toggleHidden: () => {},
-});
-
-export default CartContext;
-
-# Consuming Context
-import CartContext from '../../contexts/cart/cart.context'
-Local State
-const [hidden, setHidden] = useState(true);
-const toggleHidden = () => setHidden(!hidden);
-
-<CartContext.Provider value={ {hidden, toggleHidden} }>
-</CartContext.Provider>
-
-# Dispatching Actions
-
-const { toggleHidden } = useContext(CartContext);
+query{
+ 	getCollectionsByTitle(title: "Mens"){
+    id
+    title
+        items{
+            id
+            name
+            price
+            imageUrl
+        }
+  }
+}

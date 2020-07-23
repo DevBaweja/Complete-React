@@ -1,0 +1,204 @@
+### Context API
+
+
+### Context API
+
+The Context API is a neat way to pass state across the app without having to use props. The Context API was introduced to allow you to pass state (and enable the state to update) across the app, without having to use props for it.
+
+# Creating new context
+
+In contexts/collections/collections.context
+
+import { createContext } from 'react';
+import collections from './shop.data';
+
+const CollectionsContext = createContext(collections);
+
+export default CollectionsContext;
+
+(mapStateToProps)
+# Consuming context with Consumer Component
+
+import CollectionsContext from '../../contexts/collections/collections.context';
+
+<CollectionsContext.Consumer>
+{
+    collections => {
+        return jsx;
+    }
+}
+</CollectionsContext.Consumer>
+
+import React from 'react';
+
+import CollectionItem from '../../components/collection-item/collection-item.component';
+
+import CollectionsContext from '../../contexts/collections/collections.context';
+
+import './collection.styles.scss';
+
+const CollectionPage = ({ match }) => {
+    const renderCollectionItem = items => {
+        return items.map(item => <CollectionItem key={item.id} item={item} />);
+    };
+    return (
+        <CollectionsContext.Consumer>
+            {collections => {
+                const collection = collections[match.params.collectionType];
+                const { title, items } = collection;
+
+                return (
+                    <div className="collection-page">
+                        <h2 className="title">{title}</h2>
+                        <div className="items">{renderCollectionItem(items)}</div>
+                    </div>
+                );
+            }}
+        </CollectionsContext.Consumer>
+    );
+};
+
+export default CollectionPage;
+
+Wrap it around where we want to use state
+
+# Consuming context with useContext
+
+import { useContext } from 'react';
+
+const collections = useContext(CollectionsContext);
+
+import React, { useContext } from 'react';
+import CollectionItem from '../../components/collection-item/collection-item.component';
+import CollectionsContext from '../../contexts/collections/collections.context';
+import './collection.styles.scss';
+
+const CollectionPage = ({ match }) => {
+    const collections = useContext(CollectionsContext);
+    const collection = collections[match.params.collectionType];
+    const { title, items } = collection;
+
+    const renderCollectionItem = () => {
+        return items.map(item => <CollectionItem key={item.id} item={item} />);
+    };
+    return (
+        <div className="collection-page">
+            <h2 className="title">{title}</h2>
+            <div className="items">{renderCollectionItem()}</div>
+        </div>
+    );
+};
+
+export default CollectionPage;
+
+(mapDispatchToProps)
+# Setting Actions in Context
+
+We need to have component state
+<CollectionsContext.Provider value={this.state.user}>
+</CollectionsContext.Provider>
+
+Consumer looks for Provider in tree
+
+### Current User Context
+
+# createContext
+
+import { createContext } from 'react';
+
+const CurrentUserContext = createContext(null);
+
+export default CurrentUserContext;
+
+
+# Provider
+
+<CurrentUserContext.Provider value={this.state.currentUser}>
+    <Header />
+</CurrentUserContext.Provider>
+
+To have value change and reach out to every consumer we must have local state
+
+const renderUser = currentUser => {
+    if (currentUser) {
+        return (
+            <div className="option" onClick={() => auth.signOut()}>
+                Sign Out
+            </div>
+        );
+    } else {
+        return (
+            <Link to="sign" className="option">
+                Sign In
+            </Link>
+        );
+    }
+};
+
+<CurrentUserContext.Consumer>{renderUser}</CurrentUserContext.Consumer>
+<CurrentUserContext.Consumer>{currentUser => renderUser(currentUser)}</CurrentUserContext.Consumer>
+
+# Create .Components like Util.Heading Util.Paragraph
+### Cart Toggle Hidden
+
+# Creating Context
+import { createContext } from 'react';
+
+const CartContext = createContext({
+    hidden: true,
+    toggleHidden: () => {},
+});
+
+export default CartContext;
+
+# Consuming Context
+import CartContext from '../../contexts/cart/cart.context'
+Local State
+const [hidden, setHidden] = useState(true);
+const toggleHidden = () => setHidden(!hidden);
+
+<CartContext.Provider value={ {hidden, toggleHidden} }>
+</CartContext.Provider>
+
+# Dispatching Actions
+
+const { toggleHidden } = useContext(CartContext);
+
+### Creating Provider
+
+import React, { createContext, useState, useEffect } from 'react';
+
+import { addItemToCart, removeItemFromCart, clearItemFromCart, getCartItemsCount } from './cart.util';
+
+export const CartContext = createContext({
+    hidden: true,
+    toggleHidden: () => {},
+    cartItems: [],
+    addItemToCart: () => {},
+    removeItemFromCart: () => {},
+    clearItemFromCart: () => {},
+    cartItemsCount: 0,
+});
+
+const CartProvider = ({ children }) => {
+    const [hidden, setHidden] = useState(true);
+    const [cartItems, setCartItems] = useState([]);
+    const [cartItemsCount, setCartItemsCount] = useState(0);
+
+    const addItem = item => setCartItems(addItemToCart(cartItems, item));
+    const removeItem = item => setCartItems(removeItemFromCart(cartItems, item));
+    const clearItem = item => setCartItems(clearItemFromCart(cartItems, item));
+    const toggleHidden = () => setHidden(!hidden);
+    useEffect(() => {
+        setCartItemsCount(getCartItemsCount(cartItems));
+    }, [cartItems]);
+
+    return (
+        <CartContext.Provider
+            value={{ hidden, toggleHidden, cartItems, addItem, removeItem, clearItem, cartItemsCount }}
+        >
+            {children}
+        </CartContext.Provider>
+    );
+};
+export default CartProvider;
