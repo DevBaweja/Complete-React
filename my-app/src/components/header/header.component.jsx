@@ -1,20 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
 
 import { auth } from '../../firebase/firebase.utils';
 
 import CartIcon from '../cart-icon/cart-icon.component';
 import CartDropdown from '../cart-dropdown/cart-dropdown.component';
 
-import { selectCurrentUser } from '../../redux/user/user.selector';
-import { selectCartHidden } from '../../redux/cart/cart.selector';
+import CurrentUserContext from '../../contexts/current-user/current-user.context';
+import CartContext from '../../contexts/cart/cart.context';
 
 import { ReactComponent as Logo } from '../../assets/crown.svg';
 import './header.styles.scss';
-const Header = ({ currentUser, hidden }) => {
-    const renderUser = () => {
+const Header = () => {
+    const [hidden, setHidden] = useState(true);
+    const toggleHidden = () => setHidden(!hidden);
+
+    const renderUser = currentUser => {
         if (currentUser) {
             return (
                 <div className="option" onClick={() => auth.signOut()}>
@@ -42,17 +43,14 @@ const Header = ({ currentUser, hidden }) => {
                 <Link to="/contact" className="option">
                     Contact
                 </Link>
-                {renderUser()}
-                <CartIcon />
+                <CurrentUserContext.Consumer>{renderUser}</CurrentUserContext.Consumer>
+                <CartContext.Provider value={{ hidden, toggleHidden }}>
+                    <CartIcon />
+                </CartContext.Provider>
             </div>
             {!hidden ? <CartDropdown /> : null}
         </div>
     );
 };
 
-const mapStateToProps = createStructuredSelector({
-    currentUser: selectCurrentUser,
-    hidden: selectCartHidden,
-});
-
-export default connect(mapStateToProps)(Header);
+export default Header;

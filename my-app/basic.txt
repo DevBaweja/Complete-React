@@ -99,3 +99,67 @@ We need to have component state
 </CollectionsContext.Provider>
 
 Consumer looks for Provider in tree
+
+### Current User Context
+
+# createContext
+
+import { createContext } from 'react';
+
+const CurrentUserContext = createContext(null);
+
+export default CurrentUserContext;
+
+
+# Provider
+
+<CurrentUserContext.Provider value={this.state.currentUser}>
+    <Header />
+</CurrentUserContext.Provider>
+
+To have value change and reach out to every consumer we must have local state
+
+const renderUser = currentUser => {
+    if (currentUser) {
+        return (
+            <div className="option" onClick={() => auth.signOut()}>
+                Sign Out
+            </div>
+        );
+    } else {
+        return (
+            <Link to="sign" className="option">
+                Sign In
+            </Link>
+        );
+    }
+};
+
+<CurrentUserContext.Consumer>{renderUser}</CurrentUserContext.Consumer>
+<CurrentUserContext.Consumer>{currentUser => renderUser(currentUser)}</CurrentUserContext.Consumer>
+
+# Create .Components like Util.Heading Util.Paragraph
+### Cart Toggle Hidden
+
+# Creating Context
+import { createContext } from 'react';
+
+const CartContext = createContext({
+    hidden: true,
+    toggleHidden: () => {},
+});
+
+export default CartContext;
+
+# Consuming Context
+import CartContext from '../../contexts/cart/cart.context'
+Local State
+const [hidden, setHidden] = useState(true);
+const toggleHidden = () => setHidden(!hidden);
+
+<CartContext.Provider value={ {hidden, toggleHidden} }>
+</CartContext.Provider>
+
+# Dispatching Actions
+
+const { toggleHidden } = useContext(CartContext);
