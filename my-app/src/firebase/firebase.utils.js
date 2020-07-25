@@ -38,8 +38,44 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
     return userRef;
 };
 
-const provider = new firebase.auth.GoogleAuthProvider();
-provider.setCustomParameters({ prompt: 'select_account' });
-export const signInWithGoogle = () => auth.signInWithPopup(provider);
+export const addCollectionAndDocuments = async (collectionKey, objects) => {
+    const collectionRef = firestore.collection(collectionKey);
+    const batch = firestore.batch();
+    objects.forEach(obj => {
+        const newDocRef = collectionRef.doc();
+        batch.set(newDocRef, obj);
+    });
+
+    return await batch.commit();
+};
+
+export const convertCollectionsSnapshotToMap = collections => {
+    const transformedCollections = collections.docs.map(doc => {
+        const { title, items } = doc.data();
+        return {
+            title,
+            items,
+            routeName: encodeURI(title.toLowerCase()),
+            id: doc.id,
+        };
+    });
+    return transformedCollections.reduce((acc, cur) => {
+        acc[cur.title.toLowerCase()] = cur;
+        return acc;
+    }, {});
+};
+
+export const getCurrentUser = () => {
+    return new Promise((resolve, reject) => {
+        const unsubscribe = auth.onAuthStateChanged(userAuth => {
+            unsubscribe();
+            resolve(userAuth);
+        }, reject);
+    });
+};
+
+export const googleProvider = new firebase.auth.GoogleAuthProvider();
+googleProvider.setCustomParameters({ prompt: 'select_account' });
+export const signInWithGoogle = () => auth.signInWithPopup(googleProvider);
 
 export default firebase;

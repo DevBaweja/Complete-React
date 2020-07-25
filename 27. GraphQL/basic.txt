@@ -1,0 +1,256 @@
+### GraphQL
+
+Query language for API
+Server language that wraps around backend
+
+REST(Representational State Transfer)
+
+Related data
+Over fetching data
+
+/users
+/users/:userId/posts
+/posts/:postId/comments
+
+/graphql 
+users{
+    id
+    name
+}
+posts(userId){
+    id
+    title
+    content
+}
+
+comments(postId){
+    id
+    content
+}
+
+Query or Mutation
+
+query{
+   
+}
+mutation{
+
+}
+
+Prisma
+
+type Collection{ 
+    id: ID!
+    title: String!
+    items: [Item!]!
+}
+
+type Item{ 
+    id: ID!
+    name: String!
+    price: Float!
+    imageUrl: String!
+    collection: Collection
+}
+
+! - Manditory
+
+type Query{ 
+    collections: [Collection!]!
+    collection(id: ID!): Collection
+    getCollectionByTitle(title: String!): Collection 
+}
+
+query{
+    collections { 
+        id
+        title   
+        items{
+            id
+            name
+            price
+            imageUrl
+        }
+    }
+}
+
+
+
+query{
+ 	collection(id: "cjwuuj5bz000i0719rrtw5gqk"){
+    id
+    title
+        items{
+            id
+            name
+            price
+            imageUrl
+        }
+  }
+}
+
+query{
+ 	getCollectionsByTitle(title: "Mens"){
+    id
+    title
+        items{
+            id
+            name
+            price
+            imageUrl
+        }
+  }
+}
+
+Comment like python
+# Writw query or mutation
+
+
+### Apollo Client
+
+npm i apollo-boost react-apollo graphql
+
+# In index
+
+import { ApolloProvider } from 'react-apollo';
+import { ApolloClient, gql } from 'apollo-boost';
+
+import { createHttpLink } from 'apollo-link-http';
+const link = createHttpLink({
+    uri: url
+});
+
+import { InMemoryCache } from 'apollo-cache-inmemory';
+const cache = new InMemoryCache();
+
+const client = new ApolloClient({
+    link,
+    cache
+})
+
+// Wrapping with ApolloProvider
+<ApolloProvider client={client}>
+
+</ApolloProvider>
+
+
+client.query({
+    query: gql`
+    `
+})
+client.query({
+    query: gql`
+        {
+            getCollectionsByTitle(title: "hats") {
+                id
+                title
+                items {
+                    id
+                    name
+                    price
+                    imageUrl
+                }
+            }
+        }
+    `,
+})
+.then(res => console.log(res));
+
+#### Container Pattern with GraphQL
+import React from 'react';
+import { Query } from 'react-apollo';
+import { gql } from 'apollo-boost';
+
+import CollectionOverview from './collection-overview.component';
+import Spinner from '../spinner/spinner.component';
+
+const GET_COLLECTIONS = gql`
+    {
+        collections {
+            id
+            title
+            items {
+                id
+                name
+                price
+                imageUrl
+            }
+        }
+    }
+`;
+const CollectionOverviewContainer = () => (
+    <Query query={GET_COLLECTIONS}>
+        {({ loading, error, data }) => {
+            if (loading) return <Spinner />;
+            return <CollectionOverview collections={data.collections} />;
+        }}
+    </Query>
+);
+export default CollectionOverviewContainer;
+
+
+import { default as CollectionOverview } from '../../components/collection-overview/collection-overview.container';
+Another way to import default
+
+
+import React from 'react';
+import { Query } from 'react-apollo';
+import { gql } from 'apollo-boost';
+
+import Spinner from '../../components/spinner/spinner.component';
+
+import CollectionPage from './collection.component';
+const GET_COLLECTION_BY_TITLE = gql`
+    query getCollectionsByTitle($title: String!) {
+        getCollectionsByTitle(title: $title) {
+            id
+            title
+            items {
+                id
+                name
+                price
+                imageUrl
+            }
+        }
+    }
+`;
+
+const CollectionPageContainer = ({ match }) => (
+    <Query query={GET_COLLECTION_BY_TITLE} variables={{ title: match.params.collectionType }}>
+        {({ loading, data: { getCollectionsByTitle } }) => {
+            if (loading) return <Spinner />;
+            return <CollectionPage collection={getCollectionsByTitle} />;
+        }}
+    </Query>
+);
+
+export default CollectionPageContainer;
+
+
+### GraphQL vs Redux
+
+Get local query or mutation data as props (Pass state as props)
+Components
+Apollo Request(Actions)
+Resolvers - queries and mutations(Reducers)
+External query or mutation(Saga or Thunks)
+GraphQL Server(REST API)
+Database
+
+Local Cache(State)
+
+### Local State Management with Apollo
+
+Store
+Query (mapStateToProps)
+Mutation (mapDispatchToProps) 
+
+
+client.writeData({
+    data: {
+        cartHidden: true, 
+    }
+})
+
+#  Resolvers - Let client know what values to resolve dependencies on query or mutation
+from local client side
