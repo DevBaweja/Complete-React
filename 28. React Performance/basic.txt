@@ -1,0 +1,102 @@
+### React Performance
+
+### Lazy Loading
+
+React Lazy + Suspense
+import React,{ lazy, Suspense } from 'react';
+
+
+const Component = lazy(() => import(./url))
+
+<Suspense fallback={'Loading...'}>
+    <Route path='/page' component={Component}></Route> 
+</Suspense>
+
+Used to wrap component that are fetched asynchronous
+
+### Error Boundary
+
+import React from 'react';
+class ErrorBoundary extends React.Component {
+    state = {
+        err: false,
+    };
+    static getDerivedStateFromError(err) {
+        return { err: true };
+    }
+    componentDidCatch(err, info) {
+        console.log({ err, info });
+    }
+
+    render() {
+        const { err } = this.state;
+        const { children } = this.props;
+        if (err)
+            return <div> Something went wrong! </div>; ;
+        return children;
+    }
+}
+
+export default ErrorBoundary;
+
+
+### PureComponent (class) or React.memo (functional)
+
+Remember the props and avoid re-rendering
+
+Lifecycle method - shouldComponentUpdate(nextProps, nextState) 
+return true or false to determine if to re-render again
+class App extends React.PureComponent{
+
+}
+
+const App  = () => {
+
+}
+export default React.memo(App);
+
+Also remember to use static value and not new object every time as props
+As it is shallow comparison(memory location) and not deep comparison(actual data)
+
+### Memo functions or array (useCallback Hook)
+
+Set - It ignore same memory location fn or object to be added to it 
+As long we are adding new object by ref
+const set = new Set();
+set.add(); 
+
+import React,{ useCallback } from 'react';
+const fn = useCallback(fn, [])
+Array of dependencies
+
+fn() - is invoked while using to run method
+
+### useMemo Hook
+
+const fn = useMemo(complex fn, [])
+
+fn - is not invoked as it store value of precalculated function
+
+
+useCallback is used to memorized fn
+useMemo is used to memorized value
+
+### Gzipping and Compression
+
+Server
+
+npm i compression in server
+
+const compression = require('compression');
+
+app.use(compression())
+
+### Profiler
+
+import React,{ Profiler } from 'react';
+
+Wrap Profiler component to component we want to test
+
+<Profiler id="Directory" onRender={(id, phase, actualDuration) => log}>
+   <Directory />
+</Profiler>    
