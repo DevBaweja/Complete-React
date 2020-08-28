@@ -52,6 +52,7 @@ CloudFlare (CDN)
 # App Manifest
 realfavicongenerator
 Splash Screen
+manifest.json file
 
 # Service Worker
 Programmable Proxy
@@ -72,4 +73,22 @@ if ('serviceWorker' in navigator) {
 
 Website - Service Worker - Cache API or Server
 
+Service Worker acts as Network proxy
+It intercepts any request made first to network
+It checks cache api
+
+Manually Configuring
+sw-precache
+sw-precache --config=sw-precache-config.json
+
+Push Notifications
+push api and notification api
+
 ### Converting to PWA
+
+# In index.js
+
+import * as serviceWorker from './serviceWorker 
+serviceWorker.register()
+
+Also add appropriate 192x192 and 512x512 images in manifest.json
