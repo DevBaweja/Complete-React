@@ -92,3 +92,11 @@ import * as serviceWorker from './serviceWorker
 serviceWorker.register()
 
 Also add appropriate 192x192 and 512x512 images in manifest.json
+
+### express-sslify
+
+it enforce https
+heroku runs with reverse proxy
+const enforce = require('express-sslify');
+app.use(enforce.HTTPS({ trustProtoHeader: true }));
+
