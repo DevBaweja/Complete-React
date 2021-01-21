@@ -1,0 +1,102 @@
+### Progressive Web App
+
+Native App vs Website
+PWA
+    URL bar
+    Download on phone
+    Offline
+    Push Notifications
+
+Google - Progressive Web App
+Apple - Swift, Objective-C
+Facebook - React Native
+
+Chrome apdoted PWA
+Safari 
+
+### Examples
+
+Pokedex
+HNPWA
+What Web Can Do Today ?
+
+### Application
+
+Application in Dev Tools
+    Manifest
+    Service Workers
+    Clear Storage
+
+Storage in Dev Tools
+    Local Storage
+    Session Storage
+    IndexedDB
+    Web SQL
+    Cookies
+Cache in Dev Tools
+    Cache Storage
+    Application Cache
+
+### To Do List - PWA
+
+Https
+App Manifest
+Service Worker
+
+Progressive Web App Checklist
+
+# Https
+Let's Encrypt
+CloudFlare (CDN)
+
+# App Manifest
+realfavicongenerator
+Splash Screen
+manifest.json file
+
+# Service Worker
+Programmable Proxy
+Work offline
+Background Sink
+Push Notifications
+
+Register Service Worker
+
+if ('serviceWorker' in navigator) {
+    try {
+        const registration = await navigator['serviceWorker'].register('service-worker.js');
+        console.log('Registration successful, scope: ', registration.scope);
+    } catch (err) {
+        console.log('Registration failed!, error: ', err);
+    }
+}
+
+Website - Service Worker - Cache API or Server
+
+Service Worker acts as Network proxy
+It intercepts any request made first to network
+It checks cache api
+
+Manually Configuring
+sw-precache
+sw-precache --config=sw-precache-config.json
+
+Push Notifications
+push api and notification api
+
+### Converting to PWA
+
+# In index.js
+
+import * as serviceWorker from './serviceWorker 
+serviceWorker.register()
+
+Also add appropriate 192x192 and 512x512 images in manifest.json
+
+### express-sslify
+
+it enforce https
+heroku runs with reverse proxy
+const enforce = require('express-sslify');
+app.use(enforce.HTTPS({ trustProtoHeader: true }));
+
