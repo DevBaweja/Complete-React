@@ -1,0 +1,40 @@
+### Testing
+
+Black Box Testing - Behavior
+
+Unit Testing
+Input and Output with one purpose. Functional Programming 
+Pure Function have no side effect and deterministic
+
+Integration Testing
+Connected Components
+
+Automation Testing
+End to End Testing, UI Test
+Nightmare (automate user actions), Webdriver io (best documentation), Cypress, Test cafe(easy learning) 
+
+### Libraries
+
+Scaffolding - Jasmine, Jest, Mocha
+Giving ability to use some function and methods to write test. Building the structure
+
+Assertion - Jasmine, Jest, Chai
+Provides assertion functions
+
+Test Runner - Jasmine, Jest, Mocha, Karma
+To run tests
+DOM, Puppeteer (Headless version of browser, generate screenshot, pdf, automate form submission, UI Testing, keyboard inputs), jsdom
+
+Mocks, Spies and Stubs - Jasmine, Jest, Sinon
+Spies - Provides information about functions (how many times, in what cases, by whom)
+Stubs - Replace selected function with function to ensure expected behavior happens
+Mocks - Faking function or behavior to test different parts of process 
+
+Code Coverage - Istanbul, Jest
+
+Other - Ava(Parallel),  Tape
+
+Jest create by Facebook
+
+### Snapshot Testing
+Library Enzyme created by Air Bnb
