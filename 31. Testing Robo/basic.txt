@@ -38,3 +38,40 @@ Jest create by Facebook
 
 ### Snapshot Testing
 Library Enzyme created by Air Bnb
+
+### Setting up JEST
+
+npm i -D jest
+
+npm scripts
+test: "jest --watch"
+
+it('', () => {})
+Assertion fn to check for equality
+describe to group
+
+Dependency Injection
+Make pure functions
+
+Async
+node-fetch
+
+expect.assertions(0)
+To check number of assetions that is actually called
+
+it('test', (done) => {
+    asyncFn().then(data => {
+        done();
+    });
+})
+
+Simpley return promise
+
+it('test', () => {
+    return asyncFn().then(data => {
+
+    });
+})
+
+Or Using async await
+
