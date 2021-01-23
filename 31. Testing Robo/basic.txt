@@ -75,3 +75,5 @@ it('test', () => {
 
 Or Using async await
 
+Mock let us spy function behavior
+
